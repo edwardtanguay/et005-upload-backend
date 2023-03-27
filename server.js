@@ -21,7 +21,7 @@ app.use(express.static(staticDirectory));
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, 'public/uploadedFiles/');
+		cb(null, 'public/images/uploadedFiles/');
 	},
 	filename: (req, file, cb) => {
 		console.log('opt2', req.params.optionalFileName);
@@ -50,13 +50,13 @@ app.post(
 				: req.params.optionalFileName;
 		let iconPathAndFileName = '';
 		if (fileName.endsWith('.xlsx')) {
-			iconPathAndFileName = 'uploadedFiles/general/iconExcel.png';
+			iconPathAndFileName = 'images/general/iconExcel.png';
 		} else if (fileName.endsWith('.json')) {
-			iconPathAndFileName = 'uploadedFiles/general/iconJson.png';
+			iconPathAndFileName = 'images/general/iconJson.png';
 		} else if (fileName.endsWith('.txt')) {
-			iconPathAndFileName = 'uploadedFiles/general/iconText.png';
+			iconPathAndFileName = 'images/general/iconText.png';
 		} else {
-			iconPathAndFileName = `uploadedFiles/${fileName}`;
+			iconPathAndFileName = `images/uploadedFiles/${fileName}`;
 		}
 		db.data.fileItems.push({
 			title: req.body.title,
