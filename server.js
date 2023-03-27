@@ -25,8 +25,11 @@ const storage = multer.diskStorage({
 	},
 	filename: (req, file, cb) => {
 		console.log('opt2', req.params.optionalFileName);
-
-		cb(null, req.params.id + '.jpg');
+		const fileName =
+			req.params.optionalFileName === 'NONAME'
+				? file.originalname
+				: req.params.optionalFileName;
+		cb(null, fileName);
 	}
 });
 const upload = multer({ storage });
@@ -41,7 +44,10 @@ app.post(
 	upload.single('file'),
 	async (req, res) => {
 		await db.read();
-		const fileName = req.body.fileName;
+		const fileName =
+			req.params.optionalFileName === 'NONAME'
+				? req.body.fileName
+				: req.params.optionalFileName;
 		let iconPathAndFileName = '';
 		if (fileName.endsWith('.xlsx')) {
 			iconPathAndFileName = 'uploadedFiles/general/iconExcel.png';
@@ -52,12 +58,11 @@ app.post(
 		} else {
 			iconPathAndFileName = `uploadedFiles/${fileName}`;
 		}
-		console.log('opt1', req.params.optionalFileName);
 		db.data.fileItems.push({
 			title: req.body.title,
 			description: req.body.description,
 			notes: req.body.notes,
-			fileName: req.body.fileName,
+			fileName,
 			iconPathAndFileName
 		});
 		await db.write();
