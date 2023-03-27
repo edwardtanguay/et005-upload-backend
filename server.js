@@ -12,36 +12,32 @@ const adapter = new JSONFile(dbFile);
 const db = new Low(adapter);
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 const port = 5889;
 
 const staticDirectory = path.join(__dirname, './public');
 app.use(express.static(staticDirectory));
-
-
-let theFileName = 'original.jpg';
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, 'public/uploadedFiles/');
 	},
 	filename: (req, file, cb) => {
-		// cb(null, file.originalname);
-		// console.log('req', req);
-		console.log('file', file);
-		cb(null, req.body.fileName + '.jpg');
+		console.log('id', req.params.id);
+		console.log('title2', req.body.title);
+
+		cb(null, req.params.id + '.jpg');
 	}
 });
-
 const upload = multer({ storage });
-
-app.use(cors());
 
 app.get('/fileitems', async (req, res) => {
 	await db.read();
 	res.send(db.data.fileItems);
 });
 
-app.post('/uploadfile', upload.single('file'), async (req, res) => {
+app.post('/uploadfile/:id', upload.single('file'), async (req, res) => {
 	await db.read();
 	const fileName = req.body.fileName;
 	let iconPathAndFileName = '';
@@ -52,11 +48,9 @@ app.post('/uploadfile', upload.single('file'), async (req, res) => {
 	} else if (fileName.endsWith('.txt')) {
 		iconPathAndFileName = 'uploadedFiles/general/iconText.png';
 	} else {
-		iconPathAndFileName = `uploadedFiles/${fileName}`
+		iconPathAndFileName = `uploadedFiles/${fileName}`;
 	}
-
-	theFileName = req.body.title + '.jpg';
-
+	console.log('title1', req.body.title);
 	db.data.fileItems.push({
 		title: req.body.title,
 		description: req.body.description,
