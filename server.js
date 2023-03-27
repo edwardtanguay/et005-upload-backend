@@ -18,15 +18,15 @@ const staticDirectory = path.join(__dirname, './public');
 app.use(express.static(staticDirectory));
 
 
-let theFileName = 'nnn';
+let theFileName = 'original.jpg';
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, 'public/uploadedFiles/');
 	},
 	filename: (req, file, cb) => {
-		cb(null, file.originalname);
-		cb(null, file.originalname);
+		// cb(null, file.originalname);
+		cb(null, theFileName);
 	}
 });
 
@@ -53,8 +53,7 @@ app.post('/uploadfile', upload.single('file'), async (req, res) => {
 		iconPathAndFileName = `uploadedFiles/${fileName}`
 	}
 
-	const title = req.body.title;
-	console.log('title', title);
+	theFileName = req.body.title + '.jpg';
 
 	db.data.fileItems.push({
 		title: req.body.title,
