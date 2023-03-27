@@ -24,8 +24,7 @@ const storage = multer.diskStorage({
 		cb(null, 'public/uploadedFiles/');
 	},
 	filename: (req, file, cb) => {
-		console.log('id', req.params.id);
-		console.log('title2', req.body.title);
+		console.log('opt2', req.params.optionalFileName);
 
 		cb(null, req.params.id + '.jpg');
 	}
@@ -37,30 +36,34 @@ app.get('/fileitems', async (req, res) => {
 	res.send(db.data.fileItems);
 });
 
-app.post('/uploadfile/:id', upload.single('file'), async (req, res) => {
-	await db.read();
-	const fileName = req.body.fileName;
-	let iconPathAndFileName = '';
-	if (fileName.endsWith('.xlsx')) {
-		iconPathAndFileName = 'uploadedFiles/general/iconExcel.png';
-	} else if (fileName.endsWith('.json')) {
-		iconPathAndFileName = 'uploadedFiles/general/iconJson.png';
-	} else if (fileName.endsWith('.txt')) {
-		iconPathAndFileName = 'uploadedFiles/general/iconText.png';
-	} else {
-		iconPathAndFileName = `uploadedFiles/${fileName}`;
+app.post(
+	'/uploadfile/:optionalFileName',
+	upload.single('file'),
+	async (req, res) => {
+		await db.read();
+		const fileName = req.body.fileName;
+		let iconPathAndFileName = '';
+		if (fileName.endsWith('.xlsx')) {
+			iconPathAndFileName = 'uploadedFiles/general/iconExcel.png';
+		} else if (fileName.endsWith('.json')) {
+			iconPathAndFileName = 'uploadedFiles/general/iconJson.png';
+		} else if (fileName.endsWith('.txt')) {
+			iconPathAndFileName = 'uploadedFiles/general/iconText.png';
+		} else {
+			iconPathAndFileName = `uploadedFiles/${fileName}`;
+		}
+		console.log('opt1', req.params.optionalFileName);
+		db.data.fileItems.push({
+			title: req.body.title,
+			description: req.body.description,
+			notes: req.body.notes,
+			fileName: req.body.fileName,
+			iconPathAndFileName
+		});
+		await db.write();
+		res.json({});
 	}
-	console.log('title1', req.body.title);
-	db.data.fileItems.push({
-		title: req.body.title,
-		description: req.body.description,
-		notes: req.body.notes,
-		fileName: req.body.fileName,
-		iconPathAndFileName
-	});
-	await db.write();
-	res.json({});
-});
+);
 
 app.listen(port, () => {
 	console.log(`listening at http://localhost:${port}`);
