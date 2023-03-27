@@ -26,11 +26,13 @@ const storage = multer.diskStorage({
 	},
 	filename: (req, file, cb) => {
 		// cb(null, file.originalname);
-		cb(null, theFileName);
+		// console.log('req', req);
+		console.log('file', file);
+		cb(null, req.body.fileName + '.jpg');
 	}
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 app.use(cors());
 
