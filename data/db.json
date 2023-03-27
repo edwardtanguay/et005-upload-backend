@@ -1,0 +1,18 @@
+{
+  "fileItems": [
+    {
+      "title": "Test 001",
+      "description": "ddd1",
+      "notes": "nnn1",
+      "fileName": "lake.jpg",
+      "iconPathAndFileName": "uploadedFiles/lake.jpg"
+    },
+    {
+      "title": "sdf",
+      "description": "df",
+      "notes": "dfdf",
+      "fileName": "orangebox.png",
+      "iconPathAndFileName": "uploadedFiles/orangebox.png"
+    }
+  ]
+}
